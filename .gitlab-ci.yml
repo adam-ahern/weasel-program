@@ -1,0 +1,25 @@
+image: harbor-repo.vmware.com/dockerhub-proxy-cache/library/python:3.10
+
+before_script:
+  - python --version
+  - pip install poetry
+  - poetry install
+  - poetry run pre-commit install
+
+lint:
+  stage: .pre
+  script:
+    - poetry run pre-commit run --all-files > pre-commit.log
+  artifacts:
+    when: always
+    paths:
+      - pre-commit.log
+
+pytest:
+  stage: test
+  script:
+    - poetry run pytest --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml

@@ -1,0 +1,17 @@
+name: Checks
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Checks
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - run: pip install --upgrade pip
+      - run: pip install black==22.8.0 ruff mypy
+      - run: black --diff --check $(git ls-files '*.py')
+      - run: ruff --fix $(git ls-files '*.py')
+      - run: mypy $(git ls-files '*.py')
